@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -13,11 +13,12 @@ const validationSchema = Yup.object().shape({
 });
 
 const RegistrationForm = () => {
+  const registerButtonRef = useRef(null); // Создаем ref
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isDirty },
-    setFocus,
+    
   } = useForm({
     resolver: yupResolver(validationSchema),
     mode: 'onChange',
@@ -29,9 +30,9 @@ const RegistrationForm = () => {
 
   React.useEffect(() => {
     if (isValid && isDirty) {
-      setFocus('registerButton');
+     registerButtonRef.current.focus() // Фокусируемся на кнопке
     }
-  }, [isValid, isDirty, setFocus]);
+  }, [isValid, isDirty]);
 
   return (
     <div className="form-container">
@@ -69,7 +70,7 @@ const RegistrationForm = () => {
           {errors.confirmPassword && <div className="error">{errors.confirmPassword.message}</div>}
         </div>
 
-        <button id="registerButton" type="submit" disabled={!isValid || !isDirty}>
+        <button ref={registerButtonRef} id="registerButton" type="submit" disabled={!isValid || !isDirty}>
           Зарегистрироваться
         </button>
       </form>
